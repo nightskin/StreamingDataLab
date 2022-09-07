@@ -77,23 +77,47 @@ public class AssignmentPart1 : MonoBehaviour
 
     static public void SavePartyButtonPressed()
     {
+        int p = 0;
         foreach (PartyCharacter pc in GameContent.partyCharacters)
         {
-            PlayerPrefs.SetInt("id", pc.classID);
+            PlayerPrefs.SetInt("id" + p.ToString(), pc.classID);
 
-            PlayerPrefs.SetInt("hp", pc.health);
-            PlayerPrefs.SetInt("mp", pc.mana);
+            PlayerPrefs.SetInt("hp" + p.ToString(), pc.health);
+            PlayerPrefs.SetInt("mp" + p.ToString(), pc.mana);
             
-            PlayerPrefs.SetInt("str", pc.strength);
-            PlayerPrefs.SetInt("agl", pc.agility);
-            PlayerPrefs.SetInt("wisdom", pc.wisdom);
+            PlayerPrefs.SetInt("str" + p.ToString(), pc.strength);
+            PlayerPrefs.SetInt("agl" + p.ToString(), pc.agility);
+            PlayerPrefs.SetInt("wisdom" + p.ToString(), pc.wisdom);
+
+
+            PlayerPrefs.SetInt("eqiup1" + p.ToString(), pc.equipment.First.Value);
+            PlayerPrefs.SetInt("eqiup2" + p.ToString(), pc.equipment.Last.Value);
+
+            p++;
+
         }
     }
 
     static public void LoadPartyButtonPressed()
     {
+        int p = 0;
+        foreach(PartyCharacter pc in GameContent.partyCharacters)
+        {
+            pc.classID = PlayerPrefs.GetInt("id" + p.ToString(), pc.classID);
 
-        //GameContent.partyCharacters.Clear();
+            pc.health = PlayerPrefs.GetInt("hp" + p.ToString(), pc.health);
+            pc.mana = PlayerPrefs.GetInt("mp" + p.ToString(), pc.mana);
+
+            pc.strength = PlayerPrefs.GetInt("str" + p.ToString(), pc.strength);
+            pc.agility = PlayerPrefs.GetInt("agl" + p.ToString(), pc.agility);
+            pc.wisdom = PlayerPrefs.GetInt("wisdom" + p.ToString(), pc.wisdom);
+
+            pc.equipment.First.Value = PlayerPrefs.GetInt("eqiup1" + p.ToString());
+            pc.equipment.Last.Value = PlayerPrefs.GetInt("eqiup2" + p.ToString());
+
+
+            p++;
+        }
 
         GameContent.RefreshUI();
 
