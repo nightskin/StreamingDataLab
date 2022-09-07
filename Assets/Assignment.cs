@@ -36,20 +36,7 @@ Lab Part 1
 
     The PartyCharacter class members are defined as follows.  */
 
-public partial class PartyCharacter
-{
-    public int classID;
 
-    public int health;
-    public int mana;
-
-    public int strength;
-    public int agility;
-    public int wisdom;
-
-    public LinkedList<int> equipment;
-
-}
 
 
 /*
@@ -67,17 +54,39 @@ public partial class PartyCharacter
 
 #endregion
 
+public partial class PartyCharacter
+{
+    public int classID;
+
+    public int health;
+    public int mana;
+
+    public int strength;
+    public int agility;
+    public int wisdom;
+
+    public LinkedList<int> equipment;
+
+}
+
 
 #region Assignment Part 1
 
-static public class AssignmentPart1
+public class AssignmentPart1 : MonoBehaviour
 {
 
     static public void SavePartyButtonPressed()
     {
         foreach (PartyCharacter pc in GameContent.partyCharacters)
         {
-            Debug.Log("PC class id == " + pc.classID);
+            PlayerPrefs.SetInt("id", pc.classID);
+
+            PlayerPrefs.SetInt("hp", pc.health);
+            PlayerPrefs.SetInt("mp", pc.mana);
+            
+            PlayerPrefs.SetInt("str", pc.strength);
+            PlayerPrefs.SetInt("agl", pc.agility);
+            PlayerPrefs.SetInt("wisdom", pc.wisdom);
         }
     }
 
