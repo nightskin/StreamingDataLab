@@ -3,7 +3,7 @@
 This RPG data streaming assignment was created by Fernando Restituto.
 Pixel RPG characters created by Sean Browning.
 */
-
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -54,6 +54,8 @@ Lab Part 1
 
 #endregion
 
+
+
 public partial class PartyCharacter
 {
     public int classID;
@@ -74,49 +76,32 @@ public partial class PartyCharacter
 
 public class AssignmentPart1 : MonoBehaviour
 {
+    //string saved;
 
     static public void SavePartyButtonPressed()
     {
-        int p = 0;
+        string path = Application.dataPath + "/save.txt";
+        string saved = "";
+
         foreach (PartyCharacter pc in GameContent.partyCharacters)
         {
-            PlayerPrefs.SetInt("id" + p.ToString(), pc.classID);
-
-            PlayerPrefs.SetInt("hp" + p.ToString(), pc.health);
-            PlayerPrefs.SetInt("mp" + p.ToString(), pc.mana);
-            
-            PlayerPrefs.SetInt("str" + p.ToString(), pc.strength);
-            PlayerPrefs.SetInt("agl" + p.ToString(), pc.agility);
-            PlayerPrefs.SetInt("wisdom" + p.ToString(), pc.wisdom);
-
-
-            PlayerPrefs.SetInt("eqiup1" + p.ToString(), pc.equipment.First.Value);
-            PlayerPrefs.SetInt("eqiup2" + p.ToString(), pc.equipment.Last.Value);
-
-            p++;
-
+            saved += JsonUtility.ToJson(pc);
+            saved += "\n";
         }
+
+        File.WriteAllText(path, saved);
+        Debug.Log(saved);
     }
 
     static public void LoadPartyButtonPressed()
     {
-        int p = 0;
-        foreach(PartyCharacter pc in GameContent.partyCharacters)
+        string path = Application.dataPath + "/save.txt";
+        string[] saved = File.ReadAllLines(path);
+        GameContent.partyCharacters.Clear();
+        for(int i = 0; i < saved.Length; i++)
         {
-            pc.classID = PlayerPrefs.GetInt("id" + p.ToString(), pc.classID);
-
-            pc.health = PlayerPrefs.GetInt("hp" + p.ToString(), pc.health);
-            pc.mana = PlayerPrefs.GetInt("mp" + p.ToString(), pc.mana);
-
-            pc.strength = PlayerPrefs.GetInt("str" + p.ToString(), pc.strength);
-            pc.agility = PlayerPrefs.GetInt("agl" + p.ToString(), pc.agility);
-            pc.wisdom = PlayerPrefs.GetInt("wisdom" + p.ToString(), pc.wisdom);
-
-            pc.equipment.First.Value = PlayerPrefs.GetInt("eqiup1" + p.ToString());
-            pc.equipment.Last.Value = PlayerPrefs.GetInt("eqiup2" + p.ToString());
-
-
-            p++;
+            PartyCharacter pc = JsonUtility.FromJson<PartyCharacter>(saved[i]);
+            GameContent.partyCharacters.AddLast(pc);
         }
 
         GameContent.RefreshUI();
