@@ -1,3 +1,0 @@
-{"classID":2,"health":35,"mana":76,"strength":10,"agility":12,"wisdom":14}
-{"classID":4,"health":64,"mana":75,"strength":9,"agility":12,"wisdom":12}
-{"classID":5,"health":97,"mana":79,"strength":13,"agility":9,"wisdom":12}

@@ -7,6 +7,7 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 #region Assignment Instructions
@@ -122,7 +123,7 @@ public class AssignmentPart1 : MonoBehaviour
 //  This will enable the needed UI/function calls for your to proceed with your assignment.
 static public class AssignmentConfiguration
 {
-    public const int PartOfAssignmentThatIsInDevelopment = 1;
+    public const int PartOfAssignmentThatIsInDevelopment = 2;
 }
 
 /*
@@ -178,13 +179,40 @@ static public class AssignmentPart2
 
     }
 
+    static public string GetCurrentParty()
+    {
+        return GameObject.Find("LoadPartyDropdown").transform.Find("Label").GetComponent<Text>().text;
+    }
+
     static public void LoadPartyDropDownChanged(string selectedName)
     {
+        string path = Application.dataPath + "/save" + GetCurrentParty() + ".txt";
+        if(File.Exists(path))
+        {
+            string[] saved = File.ReadAllLines(path);
+            GameContent.partyCharacters.Clear();
+            for (int i = 0; i < saved.Length; i++)
+            {
+                PartyCharacter pc = JsonUtility.FromJson<PartyCharacter>(saved[i]);
+                GameContent.partyCharacters.AddLast(pc);
+            }
+        }
         GameContent.RefreshUI();
     }
 
     static public void SavePartyButtonPressed()
     {
+
+        string path = Application.dataPath + "/save" + GetCurrentParty() + ".txt";
+        string saved = "";
+
+        foreach (PartyCharacter pc in GameContent.partyCharacters)
+        {
+            saved += JsonUtility.ToJson(pc);
+            saved += "\n";
+        }
+
+        File.WriteAllText(path, saved);
         GameContent.RefreshUI();
     }
 
