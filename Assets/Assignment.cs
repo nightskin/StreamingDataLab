@@ -146,7 +146,7 @@ public class AssignmentPart1 : MonoBehaviour
 //  This will enable the needed UI/function calls for your to proceed with your assignment.
 static public class AssignmentConfiguration
 {
-    public const int PartOfAssignmentThatIsInDevelopment = 2;
+    public const int PartOfAssignmentThatIsInDevelopment = 1;
 }
 
 /*
