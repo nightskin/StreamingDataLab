@@ -86,27 +86,50 @@ public class AssignmentPart1 : MonoBehaviour
 
         foreach (PartyCharacter pc in GameContent.partyCharacters)
         {
-            saved += JsonUtility.ToJson(pc);
+            saved += pc.classID.ToString();
+            saved += " ";
+            saved += pc.health.ToString();
+            saved += " ";
+            saved += pc.mana.ToString();
+            saved += " ";
+            saved += pc.strength.ToString();
+            saved += " ";
+            saved += pc.wisdom.ToString();
+            saved += " ";
+            saved += pc.agility.ToString();
+            saved += " ";
+            saved += pc.equipment.First.Value.ToString();
+            saved += " ";
+            saved += pc.equipment.Last.Value.ToString();
             saved += "\n";
         }
 
         File.WriteAllText(path, saved);
-        Debug.Log(saved);
     }
 
     static public void LoadPartyButtonPressed()
     {
         string path = Application.dataPath + "/save.txt";
-        string[] saved = File.ReadAllLines(path);
-        GameContent.partyCharacters.Clear();
-        for(int i = 0; i < saved.Length; i++)
+        if (File.Exists(path))
         {
-            PartyCharacter pc = JsonUtility.FromJson<PartyCharacter>(saved[i]);
-            GameContent.partyCharacters.AddLast(pc);
+            GameContent.partyCharacters.Clear();
+            string[] save = File.ReadAllLines(path);
+            for (int i = 0; i < save.Length; i++)
+            {
+                PartyCharacter pc = new PartyCharacter();
+                string[] line = save[i].Split(" ");
+                pc.classID = System.Int32.Parse(line[0]);
+                pc.health = System.Int32.Parse(line[1]);
+                pc.mana = System.Int32.Parse(line[2]);
+                pc.strength = System.Int32.Parse(line[3]);
+                pc.wisdom = System.Int32.Parse(line[4]);
+                pc.agility = System.Int32.Parse(line[5]);
+                GameContent.partyCharacters.AddLast(pc);
+            }
+            GameContent.RefreshUI();
+
+
         }
-
-        GameContent.RefreshUI();
-
     }
 
 }
