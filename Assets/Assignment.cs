@@ -146,7 +146,7 @@ public class AssignmentPart1 : MonoBehaviour
 //  This will enable the needed UI/function calls for your to proceed with your assignment.
 static public class AssignmentConfiguration
 {
-    public const int PartOfAssignmentThatIsInDevelopment = 1;
+    public const int PartOfAssignmentThatIsInDevelopment = 2;
 }
 
 /*
@@ -184,64 +184,86 @@ Good luck, journey well.
 
 static public class AssignmentPart2
 {
+    static List<string> partynames = new List<string>();
 
     static public void GameStart()
     {
+        string partyNamePath = Application.dataPath + "/" + "PartyNames.txt";
+        string[] save = File.ReadAllLines(partyNamePath);
+        
+        if(new FileInfo(partyNamePath).Length > 0)
+        {
+            for (int i = 0; i < save.Length; i++)
+            {
+                partynames.Add(save[i]);
+            }
+            if (File.Exists(Application.dataPath + "/" + partynames[0]))
+            {
+                LoadPartyDropDownChanged(partynames[0]);
+            }
+        }
 
         GameContent.RefreshUI();
-
+        
     }
 
     static public List<string> GetListOfPartyNames()
     {
-        return new List<string>() {
-            "sample 1",
-            "sample 2",
-            "sample 3"
-        };
-
-    }
-
-    static public string GetCurrentParty()
-    {
-        return GameObject.Find("LoadPartyDropdown").transform.Find("Label").GetComponent<Text>().text;
+        return partynames;
     }
 
     static public void LoadPartyDropDownChanged(string selectedName)
     {
-        string path = Application.dataPath + "/save" + GetCurrentParty() + ".txt";
-        if(File.Exists(path))
+        string path = Application.dataPath + "/" + selectedName + ".txt";
+        GameContent.partyCharacters.Clear();
+
+        string[] save = File.ReadAllLines(path);
+        for (int i = 0; i < save.Length; i++)
         {
-            string[] saved = File.ReadAllLines(path);
-            GameContent.partyCharacters.Clear();
-            for (int i = 0; i < saved.Length; i++)
-            {
-                PartyCharacter pc = JsonUtility.FromJson<PartyCharacter>(saved[i]);
-                GameContent.partyCharacters.AddLast(pc);
-            }
+            PartyCharacter pc = new PartyCharacter();
+            string[] line = save[i].Split(" ");
+            pc.classID = System.Int32.Parse(line[0]);
+            pc.health = System.Int32.Parse(line[1]);
+            pc.mana = System.Int32.Parse(line[2]);
+            pc.strength = System.Int32.Parse(line[3]);
+            pc.wisdom = System.Int32.Parse(line[4]);
+            pc.agility = System.Int32.Parse(line[5]);
+            GameContent.partyCharacters.AddLast(pc);
         }
         GameContent.RefreshUI();
     }
 
     static public void SavePartyButtonPressed()
     {
-
-        string path = Application.dataPath + "/save" + GetCurrentParty() + ".txt";
+        string path = Application.dataPath + "/" + GameContent.GetPartyNameFromInput() + ".txt";
         string saved = "";
 
         foreach (PartyCharacter pc in GameContent.partyCharacters)
         {
-            saved += JsonUtility.ToJson(pc);
+            saved += pc.classID.ToString();
+            saved += " ";
+            saved += pc.health.ToString();
+            saved += " ";
+            saved += pc.mana.ToString();
+            saved += " ";
+            saved += pc.strength.ToString();
+            saved += " ";
+            saved += pc.wisdom.ToString();
+            saved += " ";
+            saved += pc.agility.ToString();
+            saved += " ";
+            saved += pc.equipment.First.Value.ToString();
+            saved += " ";
+            saved += pc.equipment.Last.Value.ToString();
             saved += "\n";
         }
-
         File.WriteAllText(path, saved);
+        partynames.Add(GameContent.GetPartyNameFromInput());
+
+        string partyNamePath = Application.dataPath + "/" + "PartyNames.txt";
+        File.AppendAllText(partyNamePath, GameContent.GetPartyNameFromInput() + "\n");
+
         GameContent.RefreshUI();
-    }
-
-    static public void NewPartyButtonPressed()
-    {
-
     }
 
     static public void DeletePartyButtonPressed()
