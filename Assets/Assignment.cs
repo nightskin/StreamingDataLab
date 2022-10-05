@@ -268,7 +268,26 @@ static public class AssignmentPart2
 
     static public void DeletePartyButtonPressed()
     {
+        //Remove party from ui
+        partynames.Remove(GameContent.GetPartyNameFromInput());
+        GameContent.RefreshUI();
 
+        string partyNamePath = Application.dataPath + "/" + "PartyNames.txt";
+        //clears text file
+        File.WriteAllText(partyNamePath, string.Empty);
+        //repopulates text file without deleted party name
+        for (int i = 0; i < partynames.Count; i++)
+        {
+            File.AppendAllText(partyNamePath, partynames[i] + "\n");
+        }
+
+
+        //delete party file 
+        string partyPath = Application.dataPath + "/" + GameContent.GetPartyNameFromInput() + ".txt";
+        if(File.Exists(partyPath))
+        {
+            File.Delete(partyPath);
+        }
     }
 
 }
